@@ -1,28 +1,41 @@
 import os
 import streamlit as st
 import openai
+from dotenv import load_dotenv
+from utils.searchdoc import searchdoc_api as searchdoc_api
+
+load_dotenv()
+
+AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
+AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
+AZURE_OPENAI_DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION", "2023-03-15-preview")
+AZURE_OPENAI_MODEL = os.getenv("AZURE_OPENAI_MODEL", "gpt-3.5-turbo")
+AZURE_APIM_ENDPOINT = os.getenv("AZURE_APIM_ENDPOINT")
 
 #ページタイトルとアイコンを設定する。
 st.set_page_config(page_title="Custom ChatGPT", page_icon="💬",layout="wide")
 
 #タイトルを表示する。
-st.markdown("# Azure OpenAI ChatGPT サンプルアプリケーション")
+st.markdown("# Azure OpenAI ChatGPT サンプルアプリケーション v2")
 
 #サイドバーに説明を表示する。
 st.sidebar.header("ChatGPT Demo")
 st.sidebar.markdown("Azure OpenAIのChatGPT APIを使ったWebアプリケーションのサンプル画面です。")
 
-st.sidebar.text("Endpoint："+os.getenv('OPENAI_API_ENDPOINT'))
-st.sidebar.text("API Ver："+os.getenv('OPENAI_API_VERSION'))
-st.sidebar.text("Engine："+os.getenv('OPENAI_ENGINE'))
+# st.sidebar.text("Endpoint："+AZURE_OPENAI_ENDPOINT)
+st.sidebar.text("API Ver："+AZURE_OPENAI_API_VERSION)
+st.sidebar.text("Model："+AZURE_OPENAI_MODEL)
+st.sidebar.text("Engine："+AZURE_OPENAI_DEPLOYMENT)
 
 #Azure OpenAIへの接続情報を設定する。※適宜、御社の情報に編集ください
 openai.api_type = "azure"
-openai.api_base = os.getenv('OPENAI_API_ENDPOINT')
-openai.api_version = os.getenv('OPENAI_API_VERSION')#"2023-03-15-preview"
-openai.api_key = os.getenv('OPENAI_API_KEY')
+openai.api_base = AZURE_OPENAI_ENDPOINT
+openai.api_version = AZURE_OPENAI_API_VERSION
+openai.api_key = AZURE_OPENAI_KEY
 
-openai_engine = os.getenv('OPENAI_ENGINE')
+openai_model = AZURE_OPENAI_MODEL
+openai_engine = AZURE_OPENAI_DEPLOYMENT
 
 
 # チャットの吹き出しスタイル、マークダウンのCSS
@@ -109,7 +122,16 @@ if st.sidebar.button("Clear Chat"):
 st.sidebar.markdown("ChatGPTのパラメータ設定")
 Temperature_temp = st.sidebar.slider("Temperature(温度)", 0.0, 1.0, 0.7, 0.01)
 MaxTokens_temp = st.sidebar.slider("Max_Tokens(最大応答トークン数)", 0, 2048, 500, 1)
-top_p_temp = st.sidebar.slider("Top_p(上位P)", 0.0, 1.0, 0.9, 0.01)
+# top_p_temp = st.sidebar.slider("Top_p(上位P)", 0.0, 1.0, 0.9, 0.01)
+top_p_temp = st.sidebar.slider("Top_p(上位P)", 0, 10, 5, 1)
+use_semantic_ranker = st.sidebar.selectbox(
+    "セマンティックランカーを使用しますか？:",
+    [True, False]
+)
+use_semantic_caption = st.sidebar.selectbox(
+    "セマンティックキャプションを使用しますか？:",
+    [True, False]
+)
 
 # Systemの役割を定義する。入力ボックスで指定する
 SystemRole = st.sidebar.text_area("System Role(システムの役割)", "あなたは優秀な助手です。丁寧に質問や相談に回答してください")
@@ -129,26 +151,39 @@ st.button("Clear text input", on_click=clear_text)
 st.write("")
 
 # ユーザの入力があった場合、conversationに追加する。
-st.session_state.conversation.append({"role": "user", "content": user_input})
+# st.session_state.conversation.append({"role": "user", "content": user_input})
+st.session_state.conversation.append({"user": user_input})
+
+options = {
+    "history": st.session_state.conversation,
+    "approach": "rrr",
+    "overrides": {
+        "gptModel": openai_model,
+        "temperature": Temperature_temp,
+        "top": top_p_temp,
+        "semanticRanker": use_semantic_ranker,
+        "semanticCaptions": use_semantic_caption
+    }
+}
+
+
 
 # ユーザの入力があった場合、ChatGPT APIを呼び出す。
 if user_input:
-    output = openai.ChatCompletion.create(
-          engine=openai_engine,
-          messages=st.session_state.conversation,
-          temperature=Temperature_temp,
-          max_tokens=MaxTokens_temp,
-          top_p=top_p_temp,
-          frequency_penalty=0,
-          presence_penalty=0,
-          )
+    try:
+        result = searchdoc_api(AZURE_APIM_ENDPOINT, options)
+        output = result["answer"]
+        print(result["answer"])
+    except Exception as e:
+        output = f'Error: {e}'
+        print(f'Error: {e}')
  
     # ChatGPTからの返答をconversationに追加する。
-    st.session_state.conversation.append({"role": "assistant", "content": output['choices'][0]['message']['content']})
+    st.session_state.conversation.append({"role": "assistant", "content": output})
     # ユーザからの入力をpastに追加する。
     st.session_state.past.append(user_input)
     # ChatGPTからの返答をgeneratedに追加する。
-    st.session_state.generated.append(output['choices'][0]['message']['content'].strip())
+    st.session_state.generated.append(output.strip())
 
 # generatedが存在する場合、メッセージを表示する。
 if st.session_state['generated']:
