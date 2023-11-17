@@ -63,9 +63,9 @@ git clone https://github.com/marumaru1019/openai-client.git
 1. ブラウザで http://localhost:8000 にアクセスしてください。
 ![image](https://github.com/marumaru1019/kagawa-iris-classification/assets/70362624/3af500ba-7607-467c-aac5-f2156e4df8d3)
 
-1. [5 章文章検索アプリ](https://github.com/Azure-Samples/jp-azureopenai-samples/tree/main/5.internal-document-search) の
 
 ## 動作確認
 1. ブラウザで http://localhost:8000 にアクセスしてください。
 1. テキストボックスに「就業規則とは何ですか？」と入力して、Ctrl + Enter してください。
 1. 以下のように返答が返ってきていれば成功です。
+![image](https://github.com/marumaru1019/github-image/assets/70362624/b8fdcfcc-a7a0-4a58-8c5a-37aa4caa8ca2)
