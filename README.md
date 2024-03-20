@@ -36,6 +36,8 @@ And click Save button.
 
 # 4. Set Enviroment variables
 Web Apps > Configuration > Application settings
+## TODO: Clarify app settings or connection strings
+I used Connection strings
 
 - OPENAI_API_ENDPOINT : Your Azure Open AI API endpoint URL
 - OPENAI_API_KEY : Your Azure Open AI API key
