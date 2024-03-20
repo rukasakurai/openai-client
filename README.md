@@ -36,8 +36,6 @@ And click Save button.
 
 # 4. Set Enviroment variables
 Web Apps > Configuration > Application settings
-## TODO: Clarify app settings or connection strings
-I used Connection strings
 
 - OPENAI_API_ENDPOINT : Your Azure Open AI API endpoint URL
 - OPENAI_API_KEY : Your Azure Open AI API key
@@ -47,6 +45,25 @@ I used Connection strings
 ![image](https://github.com/07JP27/openai-client/assets/11060273/a34ffd2d-f044-4202-be09-fe04ad6f7c79)
 
 And click Save button.
+
+## TODO: Clarify app settings or connection strings
+I used App settings.
+
+I think it might be only
+AZURE_APIM_ENDPOINT = os.getenv("AZURE_APIM_ENDPOINT")
+
+## TODO: Steps to create APIM
+Deployed APIM Developer tier to Japan East
+
+## Debugging
+
+The following occurs when settings such as AZURE_OPENAI_DEPLOYMENT are not in place
+```
+2024-03-20T23:16:32.259427359Z     st.sidebar.text("Engine???"+AZURE_OPENAI_DEPLOYMENT)
+2024-03-20T23:16:32.259436559Z                     ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+2024-03-20T23:16:32.259439859Z TypeError: can only concatenate str (not "NoneType") to str
+```
+
 
 # Access and Enjoy your private ChatGPT!
 If you want to set up authentication to client app, Please refer to following document.

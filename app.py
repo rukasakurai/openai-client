@@ -6,7 +6,7 @@ from utils.searchdoc import searchdoc_api as searchdoc_api
 
 load_dotenv()
 
-AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
+## AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
 AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
 AZURE_OPENAI_DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT")
 AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION", "2023-03-15-preview")
@@ -32,7 +32,7 @@ st.sidebar.text("Engine："+AZURE_OPENAI_DEPLOYMENT)
 openai.api_type = "azure"
 openai.api_base = AZURE_OPENAI_ENDPOINT
 openai.api_version = AZURE_OPENAI_API_VERSION
-openai.api_key = AZURE_OPENAI_KEY
+# openai.api_key = AZURE_OPENAI_KEY
 
 openai_model = AZURE_OPENAI_MODEL
 openai_engine = AZURE_OPENAI_DEPLOYMENT
