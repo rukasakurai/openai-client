@@ -9,6 +9,9 @@ It is assumed to be deployed on Azure App Service.
 # 1. Deploy App Service
 Deploy Python Stack Web Apps
 
+## TODO: Note about tested with which version
+I am testing with 3.12 now, and on Japan East.
+
 # 2.Deploy this application
 Web Apps > Deployment Center > Setting
 - Source : External Git
