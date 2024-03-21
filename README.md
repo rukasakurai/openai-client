@@ -53,7 +53,13 @@ I think it might be only
 AZURE_APIM_ENDPOINT = os.getenv("AZURE_APIM_ENDPOINT")
 
 ## TODO: Steps to create APIM
+### Provision
 Deployed APIM Developer tier to Japan East
+
+### Settings within APIM
+#### APIs
+- "+Add API" called docsearch
+- "+Add operation" called docsearch. POST
 
 ## Debugging
 
@@ -64,6 +70,8 @@ The following occurs when settings such as AZURE_OPENAI_DEPLOYMENT are not in pl
 2024-03-20T23:16:32.259439859Z TypeError: can only concatenate str (not "NoneType") to str
 ```
 
+### 401
+Probably missing "ocp-apim-subscription-key" in HTTP header
 
 # Access and Enjoy your private ChatGPT!
 If you want to set up authentication to client app, Please refer to following document.
