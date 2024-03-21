@@ -22,13 +22,14 @@ import json
 #         "semanticCaptions": True
 #     }
 # }
-def searchdoc_api(apim_endpoint, options):
+def searchdoc_api(apim_endpoint, options, ocp_apim_subscription_key):
     # エンドポイント URL（ローカルホストを仮定）
     url = apim_endpoint + 'docsearch'
 
     # POST リクエストのヘッダー
     headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "ocp-apim-subscription-key": ocp_apim_subscription_key
     }
 
     # POST リクエストのボディ
@@ -39,7 +40,11 @@ def searchdoc_api(apim_endpoint, options):
     }
 
     # POST リクエストを送信
-    response = requests.post(url, headers=headers, data=json.dumps(body))
+    try:
+        response = requests.post(url, headers=headers, data=json.dumps(body))
+    except requests.exceptions.RequestException as e:
+        print(f'Error sending request: {e}')
+        raise Exception(f'Error sending request: {e}')
 
     # レスポンスの解析
     if response.status_code > 299 or not response.ok:
@@ -50,4 +55,4 @@ def searchdoc_api(apim_endpoint, options):
             error_message = 'Unknown error'
         raise Exception(error_message)
 
-    return response.json()
+    return parsed_response

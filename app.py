@@ -12,6 +12,7 @@ AZURE_OPENAI_DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT")
 AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION", "2023-03-15-preview")
 AZURE_OPENAI_MODEL = os.getenv("AZURE_OPENAI_MODEL", "gpt-3.5-turbo")
 AZURE_APIM_ENDPOINT = os.getenv("AZURE_APIM_ENDPOINT")
+APIM_SUB_KEY = os.getenv("APIM_SUB_KEY")
 
 #ページタイトルとアイコンを設定する。
 st.set_page_config(page_title="Custom ChatGPT", page_icon="💬",layout="wide")
@@ -171,7 +172,7 @@ options = {
 # ユーザの入力があった場合、ChatGPT APIを呼び出す。
 if user_input:
     try:
-        result = searchdoc_api(AZURE_APIM_ENDPOINT, options)
+        result = searchdoc_api(AZURE_APIM_ENDPOINT, options, APIM_SUB_KEY)
         output = result["answer"]
         print(result["answer"])
     except Exception as e:
